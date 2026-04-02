@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Califica tu experiencia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>¿Cómo fue tu experiencia?</h1>
+
+    <div class="stars">
+      <span onclick="rate(1)">⭐</span>
+      <span onclick="rate(2)">⭐</span>
+      <span onclick="rate(3)">⭐</span>
+      <span onclick="rate(4)">⭐</span>
+      <span onclick="rate(5)">⭐</span>
+    </div>
+
+    <div id="form" class="hidden">
+      <h3>Cuéntanos qué pasó</h3>
+      <textarea id="comment" placeholder="Escribe tu comentario..."></textarea>
+      <button onclick="sendFeedback()">Enviar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
