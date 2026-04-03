@@ -1,35 +1,101 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Califica tu experiencia</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main class="card">
-    <img src="" alt="Logo del negocio" class="logo" id="logoNegocio" />
+const params = new URLSearchParams(window.location.search);
+const negocio = params.get("negocio");
 
-    <h1 id="businessName">¿Cómo fue tu experiencia?</h1>
-    <p class="subtitle">Tu opinión nos ayuda a mejorar</p>
+const config = {
+  taqueria: {
+    nombre: "Taquería Sol",
+    correo: "taqueria@gmail.com",
+    google: "https://www.google.com/maps",
+    logo: "logo-taqueria.png"
+  },
+  cafe: {
+    nombre: "Cafetería Luna",
+    correo: "cafe@gmail.com",
+    google: "https://www.google.com/maps",
+    logo: "logo-cafeteria.png"
+  },
+  barberia: {
+    nombre: "Barbería MX",
+    correo: "barberia@gmail.com",
+    google: "https://www.google.com/maps",
+    logo: "logo-barberia.png"
+  }
+};
 
-    <div class="stars" id="stars">
-      <span class="star" data-value="1">★</span>
-      <span class="star" data-value="2">★</span>
-      <span class="star" data-value="3">★</span>
-      <span class="star" data-value="4">★</span>
-      <span class="star" data-value="5">★</span>
-    </div>
+const negocioActual = config[negocio];
 
-    <p id="ratingText" class="rating-text">Selecciona una calificación</p>
+const stars = document.querySelectorAll(".star");
+const ratingText = document.getElementById("ratingText");
+const form = document.getElementById("form");
+const sendBtn = document.getElementById("sendBtn");
+const commentInput = document.getElementById("comment");
+const businessName = document.getElementById("businessName");
+const logoNegocio = document.getElementById("logoNegocio");
 
-    <div id="form" class="hidden">
-      <h3>Cuéntanos qué pasó</h3>
-      <textarea id="comment" placeholder="Escribe aquí tu comentario..."></textarea>
-      <button id="sendBtn">Enviar comentario</button>
-    </div>
-  </main>
+let selectedRating = 0;
 
-  <script src="script.js"></script>
-</body>
-</html>
+if (negocioActual) {
+  businessName.textContent = `¿Cómo fue tu experiencia en ${negocioActual.nombre}?`;
+  logoNegocio.src = negocioActual.logo;
+  logoNegocio.style.display = "block";
+} else {
+  businessName.textContent = "Negocio no configurado";
+  ratingText.textContent = "Usa ?negocio=taqueria";
+  logoNegocio.style.display = "none";
+}
+
+function paintStars(value) {
+  stars.forEach((star) => {
+    const val = Number(star.dataset.value);
+    if (val <= value) {
+      star.classList.add("active");
+    } else {
+      star.classList.remove("active");
+    }
+  });
+}
+
+function getText(value) {
+  if (value === 1) return "Muy mala";
+  if (value === 2) return "Mala";
+  if (value === 3) return "Regular";
+  if (value === 4) return "Buena";
+  if (value === 5) return "Excelente";
+}
+
+stars.forEach((star) => {
+  star.addEventListener("click", () => {
+    if (!negocioActual) {
+      alert("Usa ?negocio=taqueria");
+      return;
+    }
+
+    selectedRating = Number(star.dataset.value);
+    paintStars(selectedRating);
+    ratingText.textContent = getText(selectedRating);
+
+    if (selectedRating >= 4) {
+      setTimeout(() => {
+        window.location.href = negocioActual.google;
+      }, 500);
+    } else {
+      form.classList.remove("hidden");
+    }
+  });
+});
+
+sendBtn.addEventListener("click", () => {
+  if (!negocioActual) return;
+
+  const comment = commentInput.value.trim();
+
+  if (!comment) {
+    alert("Escribe un comentario");
+    return;
+  }
+
+  alert(`Enviado a: ${negocioActual.correo}\nComentario: ${comment}`);
+
+  commentInput.value = "";
+  form.classList.add("hidden");
+});
