@@ -2,20 +2,15 @@ const params = new URLSearchParams(window.location.search);
 const negocio = params.get("negocio");
 
 const config = {
-  taqueria: {
-    nombre: "Taquería Sol",
-    correo: "taqueria@gmail.com",
-    google: "https://www.google.com/maps"
+  lavanderia: {
+    nombre: "Lavandería de Tenis",
+    correo: "lavanderia@example.com",
+    google: "https://maps.app.goo.gl/MdsXH641Rm1zZKGUA"
   },
-  cafe: {
-    nombre: "Cafetería Luna",
-    correo: "cafe@gmail.com",
-    google: "https://www.google.com/maps"
-  },
-  barberia: {
-    nombre: "Barbería MX",
-    correo: "barberia@gmail.com",
-    google: "https://www.google.com/maps"
+  pizzeria: {
+    nombre: "Pizzería",
+    correo: "pizzeria@example.com",
+    google: "https://maps.app.goo.gl/yWmyNPfSGSHqiCqWA"
   }
 };
 
@@ -34,7 +29,7 @@ if (negocioActual) {
   businessName.textContent = `¿Cómo fue tu experiencia en ${negocioActual.nombre}?`;
 } else {
   businessName.textContent = "Negocio no configurado";
-  ratingText.textContent = "Usa una URL como ?negocio=taqueria";
+  ratingText.textContent = "Usa una URL como ?negocio=lavanderia";
 }
 
 function paintStars(value) {
@@ -61,7 +56,7 @@ function getRatingMessage(value) {
 stars.forEach((star) => {
   star.addEventListener("click", () => {
     if (!negocioActual) {
-      alert("Falta indicar el negocio en la URL. Ejemplo: ?negocio=taqueria");
+      alert("Falta indicar el negocio en la URL. Ejemplo: ?negocio=lavanderia");
       return;
     }
 
