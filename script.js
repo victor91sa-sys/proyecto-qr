@@ -3,9 +3,9 @@ const negocio = params.get("negocio");
 
 const config = {
   taqueria: {
-    nombre: "Taquería Sol",
+    nombre: "Santoua Cholula",
     correo: "taqueria@gmail.com",
-    google: "https://www.google.com/maps"
+    google: "https://maps.app.goo.gl/PU9GD6eS8M6tWzo19"
   },
   cafe: {
     nombre: "Café Luna",
