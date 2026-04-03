@@ -3,89 +3,92 @@ const negocio = params.get("negocio");
 
 const config = {
   taqueria: {
-    nombre: "Santoua Cholula",
+    nombre: "Taquería Sol",
+    mensaje: "Tu opinión nos ayuda a servir mejores tacos cada día.",
     correo: "taqueria@gmail.com",
-    google: "https://maps.app.goo.gl/PU9GD6eS8M6tWzo19"
+    google: "https://www.google.com/maps",
+    color: "#9a3412",
+    fondo: "assets/taqueria.jpg",
+    logo: "assets/logo-taqueria.png"
   },
   cafe: {
     nombre: "Café Luna",
+    mensaje: "Gracias por compartir este momento con nosotros.",
     correo: "cafe@gmail.com",
-    google: "https://www.google.com/maps"
+    google: "https://www.google.com/maps",
+    color: "#6f4e37",
+    fondo: "assets/cafe.jpg",
+    logo: "assets/logo-cafe.png"
   },
   barberia: {
-    nombre: "Barbería MX",
+    nombre: "Barbería Central",
+    mensaje: "Queremos conocer tu experiencia para seguir mejorando.",
     correo: "barberia@gmail.com",
-    google: "https://www.google.com/maps"
+    google: "https://www.google.com/maps",
+    color: "#1f2937",
+    fondo: "assets/barberia.jpg",
+    logo: "assets/logo-barberia.png"
+  },
+  demo: {
+    nombre: "Restaurante Demo",
+    mensaje: "Gracias por visitarnos. Tu opinión nos ayuda a mejorar.",
+    correo: "demo@gmail.com",
+    google: "https://www.google.com/maps",
+    color: "#7a4b2f",
+    fondo: "",
+    logo: ""
   }
 };
 
 const negocioActual = config[negocio];
-const stars = document.querySelectorAll(".star");
-const ratingText = document.getElementById("ratingText");
-const form = document.getElementById("form");
-const sendBtn = document.getElementById("sendBtn");
-const commentInput = document.getElementById("comment");
-const businessName = document.getElementById("businessName");
 
-let selectedRating = 0;
+const businessName = document.getElementById("businessName");
+const businessMessage = document.getElementById("businessMessage");
+const logo = document.getElementById("logo");
+const form = document.getElementById("form");
+const commentInput = document.getElementById("comment");
 
 if (negocioActual) {
-  businessName.textContent = `¿Cómo fue tu experiencia en ${negocioActual.nombre}?`;
+  businessName.textContent = negocioActual.nombre;
+  businessMessage.textContent = negocioActual.mensaje;
+
+  if (negocioActual.color) {
+    document.documentElement.style.setProperty("--brand-color", negocioActual.color);
+  }
+
+  if (negocioActual.fondo && negocioActual.fondo.trim() !== "") {
+    document.body.style.backgroundImage = `url("${negocioActual.fondo}")`;
+  }
+
+  if (negocioActual.logo && negocioActual.logo.trim() !== "") {
+    logo.src = negocioActual.logo;
+    logo.style.display = "block";
+  } else {
+    logo.style.display = "none";
+  }
 } else {
   businessName.textContent = "Negocio no configurado";
-  ratingText.textContent = "Usa una URL como ?negocio=taqueria";
+  businessMessage.textContent = "Revisa la URL o configura este negocio en script.js.";
+  logo.style.display = "none";
 }
 
-function paintStars(value) {
-  stars.forEach((star) => {
-    const starValue = Number(star.dataset.value);
-    if (starValue <= value) {
-      star.classList.add("active");
-    } else {
-      star.classList.remove("active");
-    }
-  });
-}
-
-function getRatingMessage(value) {
-  if (value === 1) return "Muy mala";
-  if (value === 2) return "Mala";
-  if (value === 3) return "Regular";
-  if (value === 4) return "Buena";
-  if (value === 5) return "Excelente";
-  return "Selecciona una calificación";
-}
-
-stars.forEach((star) => {
-  star.addEventListener("click", () => {
-    if (!negocioActual) {
-      alert("Falta indicar el negocio en la URL. Ejemplo: ?negocio=taqueria");
-      return;
-    }
-
-    selectedRating = Number(star.dataset.value);
-    paintStars(selectedRating);
-    ratingText.textContent = getRatingMessage(selectedRating);
-
-    if (selectedRating >= 4) {
-      setTimeout(() => {
-        window.location.href = negocioActual.google;
-      }, 500);
-    } else {
-      form.classList.remove("hidden");
-      commentInput.focus();
-    }
-  });
-});
-
-sendBtn.addEventListener("click", () => {
+function rate(value) {
   if (!negocioActual) {
     alert("Negocio no configurado");
     return;
   }
 
-  if (selectedRating === 0) {
-    alert("Primero selecciona una calificación");
+  if (value >= 4) {
+    window.location.href = negocioActual.google;
+    return;
+  }
+
+  form.classList.remove("hidden");
+}
+
+function sendFeedback() {
+  if (!negocioActual) {
+    alert("Negocio no configurado");
     return;
   }
 
@@ -97,12 +100,12 @@ sendBtn.addEventListener("click", () => {
   }
 
   alert(
-    `Comentario enviado\n\nNegocio: ${negocioActual.nombre}\nCalificación: ${selectedRating}\nCorreo destino: ${negocioActual.correo}\nComentario: ${comment}`
+    "Aquí se enviará el comentario a:\n" +
+    negocioActual.correo +
+    "\n\nComentario:\n" +
+    comment
   );
 
   commentInput.value = "";
   form.classList.add("hidden");
-  selectedRating = 0;
-  paintStars(0);
-  ratingText.textContent = "Gracias por tu opinión";
-});
+}
