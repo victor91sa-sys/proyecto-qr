@@ -7,28 +7,47 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="card">
-    <div class="badge">Tu opinión importa</div>
-
-    <h1 id="businessName">¿Cómo fue tu experiencia?</h1>
-    <p class="subtitle">Ayúdanos con una calificación rápida</p>
+  <div class="container">
+    <h1>¿Cómo fue tu experiencia?</h1>
+    <p class="subtitle">Tu opinión nos ayuda a mejorar</p>
 
     <div class="stars" id="stars">
-      <span class="star" data-value="1">★</span>
-      <span class="star" data-value="2">★</span>
-      <span class="star" data-value="3">★</span>
-      <span class="star" data-value="4">★</span>
-      <span class="star" data-value="5">★</span>
+      <span class="star" data-value="1">☆</span>
+      <span class="star" data-value="2">☆</span>
+      <span class="star" data-value="3">☆</span>
+      <span class="star" data-value="4">☆</span>
+      <span class="star" data-value="5">☆</span>
     </div>
 
-    <p id="ratingText" class="rating-text">Selecciona una cantidad de estrellas</p>
+    <p id="selected-rating" class="selected-rating">Selecciona una calificación</p>
 
-    <div id="form" class="hidden">
-      <h3>Cuéntanos qué pasó</h3>
-      <textarea id="comment" placeholder="Escribe aquí tu comentario..."></textarea>
-      <button id="sendBtn">Enviar comentario</button>
+    <div id="feedback-section" class="hidden section-box">
+      <h3>Ayúdanos a mejorar</h3>
+      <p>Cuéntanos qué pasó para poder dar seguimiento.</p>
+
+      <label for="comment">Comentario *</label>
+      <textarea
+        id="comment"
+        placeholder="Escribe aquí tu comentario"
+      ></textarea>
+
+      <label for="phone">Celular (opcional)</label>
+      <input
+        type="tel"
+        id="phone"
+        placeholder="Ej. 5512345678"
+      />
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="contact-consent" />
+        <span>Acepto ser contactado para seguimiento</span>
+      </label>
+
+      <button id="send-btn" class="primary-btn">Enviar comentario</button>
     </div>
-  </main>
+
+    <p id="message" class="message"></p>
+  </div>
 
   <script src="script.js"></script>
 </body>
