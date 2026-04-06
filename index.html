@@ -4,50 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Califica tu experiencia</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>¿Cómo fue tu experiencia?</h1>
-    <p class="subtitle">Tu opinión nos ayuda a mejorar</p>
+  <main class="page">
+    <section class="card">
+      <div class="top-row">
+        <div class="avatar">📍</div>
+        <div>
+          <p class="mini-label">Opinión del cliente</p>
+          <h1 id="business-name">Taquería Sol</h1>
+          <p class="place-subtitle">Ayúdanos a mejorar tu experiencia</p>
+        </div>
+      </div>
 
-    <div class="stars" id="stars">
-      <span class="star" data-value="1">☆</span>
-      <span class="star" data-value="2">☆</span>
-      <span class="star" data-value="3">☆</span>
-      <span class="star" data-value="4">☆</span>
-      <span class="star" data-value="5">☆</span>
-    </div>
+      <div class="divider"></div>
 
-    <p id="selected-rating" class="selected-rating">Selecciona una calificación</p>
+      <h2>¿Cómo calificarías este lugar?</h2>
 
-    <div id="feedback-section" class="hidden section-box">
-      <h3>Ayúdanos a mejorar</h3>
-      <p>Cuéntanos qué pasó para poder dar seguimiento.</p>
+      <div class="stars" id="stars">
+        <button class="star" type="button" data-value="1" aria-label="1 estrella">★</button>
+        <button class="star" type="button" data-value="2" aria-label="2 estrellas">★</button>
+        <button class="star" type="button" data-value="3" aria-label="3 estrellas">★</button>
+        <button class="star" type="button" data-value="4" aria-label="4 estrellas">★</button>
+        <button class="star" type="button" data-value="5" aria-label="5 estrellas">★</button>
+      </div>
 
-      <label for="comment">Comentario *</label>
-      <textarea
-        id="comment"
-        placeholder="Escribe aquí tu comentario"
-      ></textarea>
+      <p id="selected-rating" class="selected-rating">Selecciona una calificación</p>
 
-      <label for="phone">Celular (opcional)</label>
-      <input
-        type="tel"
-        id="phone"
-        placeholder="Ej. 5512345678"
-      />
+      <section id="feedback-section" class="feedback-section hidden">
+        <h3>Cuéntanos más sobre tu experiencia</h3>
+        <p class="feedback-copy">
+          Queremos entender lo que pasó para poder dar seguimiento.
+        </p>
 
-      <label class="checkbox-row">
-        <input type="checkbox" id="contact-consent" />
-        <span>Acepto ser contactado para seguimiento</span>
-      </label>
+        <label for="comment">Comentario *</label>
+        <textarea id="comment" placeholder="Escribe aquí tu comentario"></textarea>
 
-      <button id="send-btn" class="primary-btn">Enviar comentario</button>
-    </div>
+        <label for="phone">Celular (opcional)</label>
+        <input type="tel" id="phone" placeholder="Ej. 5512345678" />
 
-    <p id="message" class="message"></p>
-  </div>
+        <label class="checkbox-row">
+          <input type="checkbox" id="contact-consent" />
+          <span>Acepto ser contactado para seguimiento</span>
+        </label>
+
+        <button id="send-btn" class="primary-btn" type="button">Enviar comentario</button>
+      </section>
+
+      <p id="message" class="message"></p>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>

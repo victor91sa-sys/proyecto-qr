@@ -1,48 +1,50 @@
-const EMAILJS_PUBLIC_KEY = "TU_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID = "TU_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
-
 const businesses = {
   "taqueria-sol": {
     name: "Taquería Sol",
-    googleMapsUrl: "https://g.page/r/TU-LINK-TAQUERIA/review",
-    destinationEmail: "gerencia@taqueriasol.com"
+    googleMapsUrl: "https://g.page/r/TU-LINK-TAQUERIA/review"
   },
   "cafe-luna": {
     name: "Café Luna",
-    googleMapsUrl: "https://g.page/r/TU-LINK-CAFE/review",
-    destinationEmail: "contacto@cafeluna.com"
+    googleMapsUrl: "https://g.page/r/TU-LINK-CAFE/review"
   },
   "barber-mx": {
     name: "Barber MX",
-    googleMapsUrl: "https://g.page/r/TU-LINK-BARBER/review",
-    destinationEmail: "recepcion@barbermx.com"
+    googleMapsUrl: "https://g.page/r/TU-LINK-BARBER/review"
   }
 };
 
 let selectedRating = 0;
 let currentBusiness = null;
-let currentBusinessKey = null;
 
 const stars = document.querySelectorAll(".star");
+const businessName = document.getElementById("business-name");
 const selectedRatingText = document.getElementById("selected-rating");
 const feedbackSection = document.getElementById("feedback-section");
-const sendBtn = document.getElementById("send-btn");
-const message = document.getElementById("message");
-const businessName = document.getElementById("business-name");
-
 const commentInput = document.getElementById("comment");
 const phoneInput = document.getElementById("phone");
 const consentInput = document.getElementById("contact-consent");
+const sendBtn = document.getElementById("send-btn");
+const message = document.getElementById("message");
 
-(function init() {
-  emailjs.init({
-    publicKey: EMAILJS_PUBLIC_KEY
-  });
+init();
 
+function init() {
   loadBusinessFromUrl();
   attachEvents();
-})();
+}
+
+function loadBusinessFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const businessKey = params.get("negocio");
+
+  if (businessKey && businesses[businessKey]) {
+    currentBusiness = businesses[businessKey];
+  } else {
+    currentBusiness = businesses["taqueria-sol"];
+  }
+
+  businessName.textContent = currentBusiness.name;
+}
 
 function attachEvents() {
   stars.forEach((star) => {
@@ -64,33 +66,14 @@ function attachEvents() {
   sendBtn.addEventListener("click", sendFeedback);
 }
 
-function loadBusinessFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const businessKey = params.get("negocio");
-
-  if (!businessKey || !businesses[businessKey]) {
-    businessName.textContent = "Negocio no encontrado";
-    selectedRatingText.textContent = "Revisa el enlace del QR.";
-    document.getElementById("stars").classList.add("hidden");
-    return;
-  }
-
-  currentBusinessKey = businessKey;
-  currentBusiness = businesses[businessKey];
-  businessName.textContent = currentBusiness.name;
-}
-
 function setRating(value) {
-  if (!currentBusiness) return;
-
   selectedRating = value;
   paintStars(value);
-
   message.textContent = "";
   feedbackSection.classList.add("hidden");
 
   if (value === 5) {
-    selectedRatingText.textContent = "¡Gracias! Redirigiendo a la reseña...";
+    selectedRatingText.textContent = "¡Gracias! Redirigiendo...";
     setTimeout(() => {
       window.location.href = currentBusiness.googleMapsUrl;
     }, 700);
@@ -115,11 +98,6 @@ function paintStars(value) {
 }
 
 function sendFeedback() {
-  if (!currentBusiness) {
-    message.textContent = "No se encontró la configuración del negocio.";
-    return;
-  }
-
   const comment = commentInput.value.trim();
   const phone = phoneInput.value.trim();
   const consent = consentInput.checked;
@@ -135,41 +113,22 @@ function sendFeedback() {
   }
 
   const feedbackData = {
-    business_name: currentBusiness.name,
-    business_key: currentBusinessKey,
-    destination_email: currentBusiness.destinationEmail,
+    business: currentBusiness.name,
     rating: selectedRating,
     comment: comment,
-    phone: phone || "No proporcionado",
-    consent_to_contact: consent ? "Sí" : "No",
-    created_at: new Date().toLocaleString("es-MX")
+    phone: phone,
+    consentToContact: consent,
+    createdAt: new Date().toISOString()
   };
 
-  sendBtn.disabled = true;
-  sendBtn.textContent = "Enviando...";
+  console.log("Feedback capturado:", feedbackData);
 
-  emailjs
-    .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, feedbackData)
-    .then(() => {
-      message.textContent = "Gracias. Tu comentario fue enviado.";
-      clearForm();
-    })
-    .catch((error) => {
-      console.error("Error al enviar correo:", error);
-      message.textContent = "Hubo un error al enviar. Intenta de nuevo.";
-    })
-    .finally(() => {
-      sendBtn.disabled = false;
-      sendBtn.textContent = "Enviar comentario";
-    });
-}
-
-function clearForm() {
+  message.textContent = "Gracias. Tu comentario fue enviado.";
   commentInput.value = "";
   phoneInput.value = "";
   consentInput.checked = false;
+  feedbackSection.classList.add("hidden");
   selectedRating = 0;
   paintStars(0);
-  feedbackSection.classList.add("hidden");
   selectedRatingText.textContent = "Selecciona una calificación";
 }
