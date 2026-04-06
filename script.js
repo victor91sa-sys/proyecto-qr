@@ -1,20 +1,35 @@
+// =====================================
+// CONFIGURACIÓN DE EMAILJS
+// REEMPLAZA ESTOS 3 VALORES CON LOS TUYOS
+// =====================================
+const EMAILJS_PUBLIC_KEY = "TU_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = "TU_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
+
+// =====================================
+// NEGOCIOS DE PRUEBA
+// =====================================
 const businesses = {
-  "taqueria-sol": {
-    name: "Taquería Sol",
-    googleMapsUrl: "https://g.page/r/TU-LINK-TAQUERIA/review"
+  "la-sirloneria": {
+    name: "La Sirlonería",
+    googleMapsUrl: "https://maps.app.goo.gl/gunvepxTKWpFhvyi6",
+    destinationEmail: "victor91sa@gmail.com"
   },
-  "cafe-luna": {
-    name: "Café Luna",
-    googleMapsUrl: "https://g.page/r/TU-LINK-CAFE/review"
+  "tacos-de-sonora": {
+    name: "Tacos de sonora",
+    googleMapsUrl: "https://maps.app.goo.gl/UXwYr11o3zCDL34H8",
+    destinationEmail: "victor91sa@gmail.com"
   },
-  "barber-mx": {
-    name: "Barber MX",
-    googleMapsUrl: "https://g.page/r/TU-LINK-BARBER/review"
+  "fer-barber-shop-cholula": {
+    name: "Fer Barber Shop Cholula 💈",
+    googleMapsUrl: "https://maps.app.goo.gl/3Hb7GfvzpixzVLtM8",
+    destinationEmail: "victor91sa@gmail.com"
   }
 };
 
 let selectedRating = 0;
 let currentBusiness = null;
+let currentBusinessKey = null;
 
 const stars = document.querySelectorAll(".star");
 const businessName = document.getElementById("business-name");
@@ -29,6 +44,12 @@ const message = document.getElementById("message");
 init();
 
 function init() {
+  if (window.emailjs) {
+    window.emailjs.init({
+      publicKey: EMAILJS_PUBLIC_KEY
+    });
+  }
+
   loadBusinessFromUrl();
   attachEvents();
 }
@@ -38,9 +59,11 @@ function loadBusinessFromUrl() {
   const businessKey = params.get("negocio");
 
   if (businessKey && businesses[businessKey]) {
+    currentBusinessKey = businessKey;
     currentBusiness = businesses[businessKey];
   } else {
-    currentBusiness = businesses["taqueria-sol"];
+    currentBusinessKey = "la-sirloneria";
+    currentBusiness = businesses["la-sirloneria"];
   }
 
   businessName.textContent = currentBusiness.name;
@@ -69,7 +92,7 @@ function attachEvents() {
 function setRating(value) {
   selectedRating = value;
   paintStars(value);
-  message.textContent = "";
+  clearMessage();
   feedbackSection.classList.add("hidden");
 
   if (value === 5) {
@@ -97,33 +120,74 @@ function paintStars(value) {
   });
 }
 
+function clearMessage() {
+  message.textContent = "";
+  message.classList.remove("error");
+}
+
+function showError(text) {
+  message.textContent = text;
+  message.classList.add("error");
+}
+
+function showSuccess(text) {
+  message.textContent = text;
+  message.classList.remove("error");
+}
+
 function sendFeedback() {
   const comment = commentInput.value.trim();
   const phone = phoneInput.value.trim();
   const consent = consentInput.checked;
 
+  clearMessage();
+
   if (selectedRating === 0) {
-    message.textContent = "Primero selecciona una calificación.";
+    showError("Primero selecciona una calificación.");
     return;
   }
 
   if (selectedRating <= 4 && comment === "") {
-    message.textContent = "Por favor escribe un comentario.";
+    showError("Por favor escribe un comentario.");
     return;
   }
 
-  const feedbackData = {
-    business: currentBusiness.name,
+  if (!window.emailjs) {
+    showError("EmailJS no cargó correctamente.");
+    return;
+  }
+
+  const templateParams = {
+    business_name: currentBusiness.name,
+    business_slug: currentBusinessKey,
+    destination_email: currentBusiness.destinationEmail,
     rating: selectedRating,
-    comment: comment,
-    phone: phone,
-    consentToContact: consent,
-    createdAt: new Date().toISOString()
+    comment: comment || "Sin comentario",
+    phone: phone || "No proporcionado",
+    consent_to_contact: consent ? "Sí" : "No",
+    created_at: new Date().toLocaleString("es-MX")
   };
 
-  console.log("Feedback capturado:", feedbackData);
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
 
-  message.textContent = "Gracias. Tu comentario fue enviado.";
+  window.emailjs
+    .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(() => {
+      showSuccess("Gracias. Tu comentario fue enviado.");
+      resetForm();
+    })
+    .catch((error) => {
+      console.error("Error al enviar el correo:", error);
+      showError("Hubo un error al enviar el comentario.");
+    })
+    .finally(() => {
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Enviar comentario";
+    });
+}
+
+function resetForm() {
   commentInput.value = "";
   phoneInput.value = "";
   consentInput.checked = false;
