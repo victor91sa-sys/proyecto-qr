@@ -10,16 +10,18 @@ const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
 // NEGOCIOS DE PRUEBA
 // =====================================
 const businesses = {
-  "la-sirloneria": {
-    name: "La Sirlonería",
-    googleMapsUrl: "https://maps.app.goo.gl/gunvepxTKWpFhvyi6",
+  "tasvaluo": {
+    name: "Tasvalúo",
+    googleMapsUrl: "https://maps.app.goo.gl/ezGeuGYRZ6Xaebam8",
     destinationEmail: "victor91sa@gmail.com"
   },
+
   "tacos-de-sonora": {
     name: "Tacos de sonora",
     googleMapsUrl: "https://maps.app.goo.gl/UXwYr11o3zCDL34H8",
     destinationEmail: "victor91sa@gmail.com"
   },
+
   "fer-barber-shop-cholula": {
     name: "Fer Barber Shop Cholula 💈",
     googleMapsUrl: "https://maps.app.goo.gl/3Hb7GfvzpixzVLtM8",
@@ -62,8 +64,8 @@ function loadBusinessFromUrl() {
     currentBusinessKey = businessKey;
     currentBusiness = businesses[businessKey];
   } else {
-    currentBusinessKey = "la-sirloneria";
-    currentBusiness = businesses["la-sirloneria"];
+    currentBusinessKey = "tasvaluo";
+    currentBusiness = businesses["tasvaluo"];
   }
 
   businessName.textContent = currentBusiness.name;
@@ -97,9 +99,11 @@ function setRating(value) {
 
   if (value === 5) {
     selectedRatingText.textContent = "¡Gracias! Redirigiendo...";
+
     setTimeout(() => {
       window.location.href = currentBusiness.googleMapsUrl;
     }, 700);
+
   } else {
     selectedRatingText.textContent = `${value} de 5 estrellas`;
     feedbackSection.classList.remove("hidden");
@@ -172,7 +176,11 @@ function sendFeedback() {
   sendBtn.textContent = "Enviando...";
 
   window.emailjs
-    .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      templateParams
+    )
     .then(() => {
       showSuccess("Gracias. Tu comentario fue enviado.");
       resetForm();
@@ -191,8 +199,12 @@ function resetForm() {
   commentInput.value = "";
   phoneInput.value = "";
   consentInput.checked = false;
+
   feedbackSection.classList.add("hidden");
+
   selectedRating = 0;
   paintStars(0);
-  selectedRatingText.textContent = "Selecciona una calificación";
+
+  selectedRatingText.textContent =
+    "Selecciona una calificación";
 }
